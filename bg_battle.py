@@ -75,8 +75,16 @@ class Battle:
         team = self.GetTeamByIndex(teamindex)
         if len(team) == 1:
             return team[0]
-        target_unit = team[random.randint(0, len(team)-1)]
-        return target_unit
+
+        taunt_units = self.getTauntUnitsFromTeam(teamindex)
+        if len(taunt_units) > 0:
+            team = taunt_units
+
+        if len(team) == 1:
+            return team[0]
+        else:
+            target_unit = team[random.randint(0, len(team)-1)]
+            return target_unit
 
     def GetTeamByIndex(self, team_index):
         team = []
@@ -102,12 +110,17 @@ class Battle:
         team2 = ''
         for unit in self.GetTeamByIndex(0):
             team1 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ') '
+            if unit.isTaunt():
+                team1 += 'taunt'
         for unit in self.GetTeamByIndex(1):
             team2 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ') '
+            if unit.isTaunt():
+                team2 += 'taunt'
         print(team1)
         print(team2)
 
     def StartBattle(self):
+        print('New battle started')
         team1_next_unit = 0
         team2_next_unit = 0
 
@@ -149,3 +162,12 @@ class Battle:
 
         print('Winner team is ' + self.winner)
         #time.sleep(1)
+
+    def getTauntUnitsFromTeam(self, team_index):
+        units = self.GetTeamByIndex(team_index)
+        total = []
+        for unit in units:
+            if unit.isTaunt():
+                total.append(unit)
+        return total
+

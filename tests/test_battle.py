@@ -71,3 +71,27 @@ def test_few_rounds_battle():
     battle = Battle(team1, team2)
     battle.StartBattle()
     assert battle.winner == 'Team2'
+
+def test_gettaunt():
+    team2 = bg_unit_factory.create_custom_team([(4, 4), (1, 1)], 'Must win')
+    team2[0].set_taunt()
+    battle = Battle(pool_teams(1), team2)
+    tauntunits = battle.getTauntUnitsFromTeam(1)
+    assert len(tauntunits) == 1
+    assert tauntunits[0].GetAtk() == 4
+
+
+def test_taunts_second_team_always_win():
+    only_team2_win = True
+
+    for fight in range(0, 20):
+        team1 = bg_unit_factory.create_custom_team([(4, 4)], 'Must lose')
+        team2 = bg_unit_factory.create_custom_team([(4, 4), (1, 1)], 'Must win')
+        team2[0].set_taunt()
+        battle = Battle(team1, team2)
+        battle.StartBattle()
+        if battle.winner != 'Team2':
+            only_team2_win = False
+
+
+    assert only_team2_win is True

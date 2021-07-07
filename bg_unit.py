@@ -9,12 +9,15 @@ class Unit:
     atk = 0
     hp = 0
 
-    def __init__(self, attack, health, name):
+    taunt = False
+
+    def __init__(self, attack, health, name, taunt=False):
         self.baseatk = attack
         self.atk = attack
         self.basehp = health
         self.hp = health
         self.name = name
+        self.taunt = taunt
 
     def MakeAttack(self, target_unit):
         target_unit.TakeDamage(self.atk)
@@ -43,3 +46,9 @@ class Unit:
 
     def GetHp(self):
         return self.hp
+
+    def isTaunt(self):
+        return self.taunt
+
+    def set_taunt(self):
+        self.taunt = True
