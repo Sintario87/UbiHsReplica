@@ -3,6 +3,9 @@ class Unit:
     death = False
     name = ''
 
+    teamindex = -1
+    battle = None
+
     baseatk = 0
     basehp = 0
 
@@ -11,6 +14,10 @@ class Unit:
 
     taunt = False
     bubble = False
+    reborn = False
+
+    death_event = 0
+    invoke_death_event = 0
 
     fraction = 0
     # 0 - neutral
@@ -18,7 +25,7 @@ class Unit:
     # 2 - dragon
     # 3 - mech
 
-    def __init__(self, attack, health, name, taunt=False, bubble=False, fraction=0):
+    def __init__(self, attack, health, name, taunt=False, bubble=False, reborn=False, fraction=0, death_event=0):
         self.baseatk = attack
         self.atk = attack
         self.basehp = health
@@ -27,10 +34,14 @@ class Unit:
         self.taunt = taunt
         self.bubble = bubble
         self.fraction = fraction
+        self.reborn = reborn
+        self.death_event = death_event
+        self.invoke_death_event = 0
 
     def MakeAttack(self, target_unit):
         target_unit.TakeDamage(self.atk)
         self.TakeDamage(target_unit.atk)
+        return self.invoke_death_event
 
 
     def TakeDamage(self, dmg):
@@ -43,6 +54,7 @@ class Unit:
     def CheckForDeath(self):
         if self.hp < 1:
             self.death = True
+            self.invoke_death_event = self.death_event
             return True
         else:
             return False

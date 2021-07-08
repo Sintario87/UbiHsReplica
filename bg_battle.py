@@ -18,6 +18,11 @@ class Battle:
     team1 = []
     team2 = []
 
+    team1_next_unit = 0
+    team2_next_unit = 0
+
+    turn_team = 0
+
     def __init__(self, team1_units, team2_units):
         self.team1 = team1_units
         self.team2 = team2_units
@@ -121,43 +126,71 @@ class Battle:
         print('|  ' + team2 + '  |')
         print('-' * 30)
 
-    def StartBattle(self):
-        print('New battle started')
-        team1_next_unit = 0
-        team2_next_unit = 0
+    def preparation(self):
+        for unit in self.team1:
+            unit.teamindex = 0
+            unit.battle = self
 
-        turn_team = random.randint(0, 1)
+        for unit in self.team2:
+            unit.teamindex = 1
+            unit.battle = self
+
+    def StartBattle(self, first_turn_team=-1, first_turn_unit_index=-1):
+        self.preparation()
+        print('New battle started')
+
+        self.team1_next_unit = 0
+        self.team2_next_unit = 0
+        self.turn_team = random.randint(0, 1)
+
+        if first_turn_team != -1:
+            self.turn_team = first_turn_team
+            if first_turn_unit_index != -1:
+                if first_turn_team == 0:
+                    self.team1_next_unit = first_turn_unit_index
+                else:
+                    self.team2_next_unit = first_turn_unit_index
+
 
         while not self.isOver:
             self.PrintTableState()
 
-            attacker_unit_index = team1_next_unit if turn_team == 0 else team2_next_unit
-            defence_team_index = 1 if turn_team == 0 else 0
+            attacker_unit_index = self.team1_next_unit if self.turn_team == 0 else self.team2_next_unit
+            defence_team_index = 1 if self.turn_team == 0 else 0
             defence_unit = self.ChooseUnitToAttack(defence_team_index)
-            attacker_unit = self.GetUnitFromTeamByIndex(turn_team, attacker_unit_index)
+            attacker_unit = self.GetUnitFromTeamByIndex(self.turn_team, attacker_unit_index)
 
-            attacker_unit.MakeAttack(defence_unit)
-
-            log_line = self.GetUnitFromTeamByIndex(turn_team, attacker_unit_index).GetName() + ' атаковал ' \
-                      + defence_unit.GetName()
+            death_event = attacker_unit.MakeAttack(defence_unit)
+            log_line = self.GetUnitFromTeamByIndex(self.turn_team, attacker_unit_index).GetName() + ' атаковал ' \
+                       + defence_unit.GetName()
+            if death_event > 0:
+                self.InvokeEvent(death_event, self.turn_team, attacker_unit_index)
+            if defence_unit.invoke_death_event > 0:
+                def_team = self.GetTeamByIndex(defence_unit.teamindex)
+                index = def_team.index(defence_unit)
+                self.InvokeEvent(defence_unit.invoke_death_event, def_team, index)
 
             self.remove_death_units(self.team1)
             self.remove_death_units(self.team2)
 
+
+
+
+
             self.isTeamLoss()
 
-            if turn_team == 0:
-                team1_next_unit += 1
+            if self.turn_team == 0:
+                self.team1_next_unit += 1
             else:
-                team2_next_unit += 1
+                self.team2_next_unit += 1
 
-            if team1_next_unit >= len(self.GetTeamByIndex(0)):
-                team1_next_unit = 0
+            if self.team1_next_unit >= len(self.GetTeamByIndex(0)):
+                self.team1_next_unit = 0
 
-            if team2_next_unit >= len(self.GetTeamByIndex(1)):
-                team2_next_unit = 0
+            if self.team2_next_unit >= len(self.GetTeamByIndex(1)):
+                self.team2_next_unit = 0
 
-            turn_team = 1 if turn_team == 0 else 0
+            self.turn_team = 1 if self.turn_team == 0 else 0
             print(log_line)
             self.PrintTableState()
             print('*' * 20)
@@ -172,4 +205,31 @@ class Battle:
             if unit.isTaunt():
                 total.append(unit)
         return total
+    
+    def is_unit_attacker(self, team_index):
+        if team_index == self.turn_team:
+            return True
+        else:
+            return False
 
+
+    def InvokeEvent(self, event_index, team_index, unit_index):
+        if event_index == 1:
+            self.DR_Harvest_golem(team_index, unit_index)
+
+
+    def summon(self, atk, hp, name, team_index, index, special_event=0, fraction = 0):
+        team = self.GetTeamByIndex(team_index)
+        if special_event == 0:
+            unit = bg_unit_factory.create_custom_unit(atk, hp, name, fraction=fraction)
+            team.insert(index, unit)
+
+        if self.is_unit_attacker(team_index):
+            if team_index == 0:
+                self.team1_next_unit -= 1
+            else:
+                self.team2_next_unit -= 1
+
+
+    def DR_Harvest_golem(self, team_index, index:int):
+        self.summon(2, 1, 'harvest golem summon', team_index, index, fraction=3)

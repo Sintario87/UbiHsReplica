@@ -110,3 +110,17 @@ def test_bubble_second_team_always_win():
 
     assert only_team2_win is True
     assert team2[0].bubble is False
+
+def test_summon_second_team_wins():
+    only_team2_win = True
+
+    for fight in range(0, 20):
+        team1 = bg_unit_factory.create_custom_team([(2, 2), (2, 2), (2, 2)], 'Must lose')
+        team2 = bg_unit_factory.create_custom_team([(2, 2), (2, 2), (2, 2)], 'Must win')
+        team2[0].death_event = 1
+        battle = Battle(team1, team2)
+        battle.StartBattle()
+        if battle.winner != 'Team2':
+            only_team2_win = False
+
+    assert only_team2_win is True

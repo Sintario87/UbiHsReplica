@@ -4,7 +4,7 @@ from bg_unit import Unit
 def create_team_for_tests(team_marker: str = 'solo'):
     return create_custom_team([(2, 2), (1, 3), (2, 2)], team_marker)
 
-def create_custom_unit(atk, hp, name):
+def create_custom_unit(atk, hp, name, fraction=0,):
     custom_unit = Unit(atk, hp, name)
     return custom_unit
 
@@ -14,6 +14,6 @@ def create_custom_team(units_stats, marker: str = 'solo'):
     team = []
     count = 1
     for item in units_stats:
-        team.append(Unit(item[0], item[1], 'CustomUnit' + str(count) + '_' + marker))
+        team.append(Unit(item[0], item[1], 'U' + str(count) + '_' + marker))
         count += 1
     return team
