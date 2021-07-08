@@ -116,8 +116,10 @@ class Battle:
             team2 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ') '
             if unit.isTaunt():
                 team2 += 'taunt'
-        print(team1)
-        print(team2)
+        print('-' * 30)
+        print('|  ' + team1 + '  |')
+        print('|  ' + team2 + '  |')
+        print('-' * 30)
 
     def StartBattle(self):
         print('New battle started')
