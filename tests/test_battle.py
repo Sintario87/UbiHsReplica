@@ -9,8 +9,8 @@ def pool_teams(index):
     teams.append(bg_unit_factory.create_custom_team([(2, 2), (2, 2)], 'twos'))
     teams.append(bg_unit_factory.create_custom_team([(1, 2), (1, 2), (1, 2), (1, 2), (1, 2), (1, 2)], 'onetwos'))
     teams.append(bg_unit_factory.create_custom_team([(1, 3), (1, 3), (1, 3), (1, 3), (1, 3), (1, 3)], 'onethrees'))
-    return teams[index]
 
+    return teams[index]
 
 def kill_first_unit(team):
     del(team[0])
@@ -95,3 +95,18 @@ def test_taunts_second_team_always_win():
 
 
     assert only_team2_win is True
+
+def test_bubble_second_team_always_win():
+    only_team2_win = True
+
+    for fight in range(0, 20):
+        team1 = bg_unit_factory.create_custom_team([(3, 3)], 'Must lose')
+        team2 = bg_unit_factory.create_custom_team([(3, 3)], 'Must win')
+        team2[0].set_bubble()
+        battle = Battle(team1, team2)
+        battle.StartBattle()
+        if battle.winner != 'Team2':
+            only_team2_win = False
+
+    assert only_team2_win is True
+    assert team2[0].bubble is False

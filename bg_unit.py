@@ -10,14 +10,16 @@ class Unit:
     hp = 0
 
     taunt = False
+    bubble = False
 
-    def __init__(self, attack, health, name, taunt=False):
+    def __init__(self, attack, health, name, taunt=False, bubble=False):
         self.baseatk = attack
         self.atk = attack
         self.basehp = health
         self.hp = health
         self.name = name
         self.taunt = taunt
+        self.bubble = bubble
 
     def MakeAttack(self, target_unit):
         target_unit.TakeDamage(self.atk)
@@ -25,11 +27,14 @@ class Unit:
 
 
     def TakeDamage(self, dmg):
-        self.hp = self.hp - dmg
-        self.CheckForDeath()
+        if self.bubble:
+            self.bubble = False
+        else:
+            self.hp = self.hp - dmg
+            self.CheckForDeath()
 
     def CheckForDeath(self):
-        if(self.hp < 1):
+        if self.hp < 1:
             self.death = True
             return True
         else:
@@ -52,3 +57,6 @@ class Unit:
 
     def set_taunt(self):
         self.taunt = True
+
+    def set_bubble(self):
+        self.bubble = True
