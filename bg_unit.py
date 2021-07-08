@@ -12,7 +12,13 @@ class Unit:
     taunt = False
     bubble = False
 
-    def __init__(self, attack, health, name, taunt=False, bubble=False):
+    fraction = 0
+    # 0 - neutral
+    # 1 - beast
+    # 2 - dragon
+    # 3 - mech
+
+    def __init__(self, attack, health, name, taunt=False, bubble=False, fraction=0):
         self.baseatk = attack
         self.atk = attack
         self.basehp = health
@@ -20,6 +26,7 @@ class Unit:
         self.name = name
         self.taunt = taunt
         self.bubble = bubble
+        self.fraction = fraction
 
     def MakeAttack(self, target_unit):
         target_unit.TakeDamage(self.atk)
