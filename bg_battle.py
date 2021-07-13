@@ -114,13 +114,15 @@ class Battle:
         team1 = ''
         team2 = ''
         for unit in self.GetTeamByIndex(0):
+            if unit.isTaunt():
+                team1 += 'taunt_'
             team1 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ')  '
-            if unit.isTaunt():
-                team1 += 'taunt'
+
         for unit in self.GetTeamByIndex(1):
-            team2 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ')  '
             if unit.isTaunt():
-                team2 += 'taunt'
+                team2 += 'taunt_'
+            team2 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ')  '
+
         print('-' * 30)
         print('|  ' + team1 + '  |')
         print('|  ' + team2 + '  |')
