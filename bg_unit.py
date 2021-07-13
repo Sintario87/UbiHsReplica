@@ -79,3 +79,8 @@ class Unit:
 
     def set_bubble(self):
         self.bubble = True
+
+    def self_buff(self, buff): #(atk,hp) tuple
+        self.atk += buff[0]
+        self.hp += buff[1]
+
