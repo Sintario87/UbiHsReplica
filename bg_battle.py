@@ -114,11 +114,11 @@ class Battle:
         team1 = ''
         team2 = ''
         for unit in self.GetTeamByIndex(0):
-            team1 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ') '
+            team1 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ')  '
             if unit.isTaunt():
                 team1 += 'taunt'
         for unit in self.GetTeamByIndex(1):
-            team2 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ') '
+            team2 += unit.GetName() + '(' + str(unit.GetAtk()) + '/' + str(unit.GetHp()) + ')  '
             if unit.isTaunt():
                 team2 += 'taunt'
         print('-' * 30)
@@ -170,6 +170,11 @@ class Battle:
                 index = def_team.index(defence_unit)
                 self.InvokeEvent(defence_unit.invoke_death_event, def_team, index)
 
+            if attacker_unit.CheckForDeath():
+                self.on_death_self_buff_event(attacker_unit, self.turn_team)
+            if defence_unit.CheckForDeath():
+                self.on_death_self_buff_event(defence_unit, self.get_defence_team_index())
+
             self.remove_death_units(self.team1)
             self.remove_death_units(self.team2)
 
@@ -198,6 +203,12 @@ class Battle:
         print('Winner team is ' + self.winner)
         #time.sleep(1)
 
+    def get_defence_team_index(self):
+        if self.turn_team == 0:
+            return 1
+        else:
+            return 0
+
     def getTauntUnitsFromTeam(self, team_index):
         units = self.GetTeamByIndex(team_index)
         total = []
@@ -212,6 +223,22 @@ class Battle:
         else:
             return False
 
+    def get_self_buff_units_from_team(self, team_index):
+        units = self.GetTeamByIndex(team_index)
+        total = []
+        for unit in units:
+            if unit.self_buff_event > 0:
+                total.append(unit)
+        return total
+
+    def on_death_self_buff_event(self, unit, team_index):
+        units = self.get_self_buff_units_from_team(team_index)
+        if len(units) > 0:
+            for mob in units:
+                if unit.fraction == 3:
+                    mob.invoke_buff_on_death_event(3)
+                if unit.fraction == 1:
+                    mob.invoke_buff_on_death_event(1)
 
     def InvokeEvent(self, event_index, team_index, unit_index):
         if event_index == 1:
