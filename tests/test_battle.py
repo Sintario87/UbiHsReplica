@@ -142,3 +142,21 @@ def test_hyena_buff_draw():
             only_draw = False
 
     assert only_draw is True
+
+def test_junkbot_buff_team2_win():
+    only_team2_win = True
+
+    for fight in range(0, 10):
+        team1 = bg_unit_factory.create_custom_team([(5, 6)], 'M')
+        team2 = bg_unit_factory.create_custom_team([(1, 1), (1, 1), (2, 2)], 'u')
+        team2[0].fraction = 3
+        team2[0].set_taunt()
+        team2[1].fraction = 3
+        team2[1].set_taunt()
+        team2[2].self_buff_event = 2
+        battle = Battle(team1, team2)
+        battle.StartBattle()
+        if battle.winner != 'Team2':
+            only_team2_win = False
+
+    assert only_team2_win is True

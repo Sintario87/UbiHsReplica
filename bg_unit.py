@@ -18,7 +18,7 @@ class Unit:
 
     death_event = 0
     invoke_death_event = 0
-    self_buff_event = 0   # 1-blockbot 2-junkbot 3-hyena
+    self_buff_event = 0   #  2-junkbot 3-hyena
 
     fraction = 0
     # 0 - neutral
