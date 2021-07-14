@@ -32,10 +32,9 @@ def create_dragonspawn_lieutenant():
     return unit
 
 def create_hyena():
-    unit = Unit(2, 2, 'Hyena', unitid=3)
+    unit = Unit(2, 2, 'Hyena', unitid=3, sb_event=3)
     unit.star_level = 1
     unit.fraction = 1
-    unit.self_buff_event = 3
     return unit
 
 def create_micro_machine():

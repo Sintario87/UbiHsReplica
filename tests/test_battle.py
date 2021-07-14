@@ -130,12 +130,12 @@ def test_hyena_buff_draw():
 
     for fight in range(0, 10):
         team1 = bg_unit_factory.create_custom_team([(8, 8)], 'M')
-        team2 = bg_unit_factory.create_custom_team([(1, 1), (1, 1), (2, 2)], 'u')
+        team2 = bg_unit_factory.create_custom_team([(1, 1), (1, 1)], 'u')
         team2[0].fraction = 1
         team2[0].set_taunt()
         team2[1].fraction = 1
         team2[1].set_taunt()
-        team2[2].self_buff_event = 3
+        team2.append(bg_unit_factory.create_hyena())
         battle = Battle(team1, team2)
         battle.StartBattle()
         if battle.winner != 'Draw':
@@ -148,12 +148,12 @@ def test_junkbot_buff_team2_win():
 
     for fight in range(0, 10):
         team1 = bg_unit_factory.create_custom_team([(5, 6)], 'M')
-        team2 = bg_unit_factory.create_custom_team([(1, 1), (1, 1), (2, 2)], 'u')
+        team2 = bg_unit_factory.create_custom_team([(1, 1), (1, 1)], 'u')
+        team2.append(bg_unit_factory.create_junkbot())
         team2[0].fraction = 3
         team2[0].set_taunt()
         team2[1].fraction = 3
         team2[1].set_taunt()
-        team2[2].self_buff_event = 2
         battle = Battle(team1, team2)
         battle.StartBattle()
         if battle.winner != 'Team2':
