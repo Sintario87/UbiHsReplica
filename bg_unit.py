@@ -2,6 +2,7 @@ class Unit:
 
     death = False
     name = ''
+    unit_id = 0
 
     teamindex = -1
     battle = None
@@ -20,13 +21,15 @@ class Unit:
     invoke_death_event = 0
     self_buff_event = 0   #  2-junkbot 3-hyena
 
+    star_level = 1
     fraction = 0
     # 0 - neutral
     # 1 - beast
     # 2 - dragon
     # 3 - mech
 
-    def __init__(self, attack, health, name, taunt=False, bubble=False, reborn=False, fraction=0, death_event=0):
+    def __init__(self, attack, health, name, taunt=False, bubble=False, reborn=False, fraction=0, death_event=0, sb_event=0, unitid=0):
+        self.unit_id = unitid
         self.baseatk = attack
         self.atk = attack
         self.basehp = health
@@ -38,6 +41,7 @@ class Unit:
         self.reborn = reborn
         self.death_event = death_event
         self.invoke_death_event = 0
+        self.self_buff_event = sb_event
 
     def MakeAttack(self, target_unit):
         target_unit.TakeDamage(self.atk)
@@ -80,6 +84,9 @@ class Unit:
 
     def set_bubble(self):
         self.bubble = True
+
+    def set_reborn(self):
+        self.reborn = True
 
     def self_buff(self, buff): #(atk,hp) tuple
         self.atk += buff[0]
