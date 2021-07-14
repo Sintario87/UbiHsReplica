@@ -247,10 +247,13 @@ class Battle:
             self.DR_Harvest_golem(team_index, unit_index)
 
 
-    def summon(self, atk, hp, name, team_index, index, special_event=0, fraction = 0):
+    def summon_custom(self, atk, hp, name, team_index, index, special_event=0, fraction = 0, complete_unit=None):
         team = self.GetTeamByIndex(team_index)
         if special_event == 0:
-            unit = bg_unit_factory.create_custom_unit(atk, hp, name, fraction=fraction)
+            if complete_unit == None:
+                unit = bg_unit_factory.create_custom_unit(atk, hp, name, fraction=fraction)
+            else:
+                unit = complete_unit
             team.insert(index, unit)
 
         if self.is_unit_attacker(team_index):
@@ -259,6 +262,11 @@ class Battle:
             else:
                 self.team2_next_unit -= 1
 
+    def reborn(self, unit_id, index_in_team, team_index):
+        unit_to_reborn = bg_unit_factory.create_unit_by_id(unit_id)
+        unit_to_reborn.hp = 1
+        unit_to_reborn.reborn = False
+        self.summon_custom(999,999,'complete_unit_error', complete_unit=unit_to_reborn)
 
     def DR_Harvest_golem(self, team_index, index:int):
-        self.summon(2, 1, 'harvest golem summon', team_index, index, fraction=3)
+        self.summon_custom(2, 1, 'harvest golem summon', team_index, index, fraction=3)
