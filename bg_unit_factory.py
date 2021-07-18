@@ -1,4 +1,5 @@
 from bg_unit import Unit
+import copy
 
 total_list_of_units = []
 
@@ -21,7 +22,7 @@ def create_custom_team(units_stats, marker: str = 'solo'):
     return team
 
 def create_unit_by_id(unit_id):
-    return total_list_of_units[unit_id]
+    return copy.deepcopy(total_list_of_units[unit_id])
 
 
 def preparation_list_of_units():

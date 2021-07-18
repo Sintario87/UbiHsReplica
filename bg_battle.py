@@ -174,8 +174,12 @@ class Battle:
 
             if attacker_unit.CheckForDeath():
                 self.on_death_self_buff_event(attacker_unit, self.turn_team)
+                if attacker_unit.reborn:
+                    self.reborn(attacker_unit.unit_id, self.turn_team, self.get_atk_team_units_list())
             if defence_unit.CheckForDeath():
                 self.on_death_self_buff_event(defence_unit, self.get_defence_team_index())
+                if defence_unit.reborn:
+                    self.reborn(defence_unit.unit_id, self.turn_team, self.get_def_team_units_list())
 
             self.remove_death_units(self.team1)
             self.remove_death_units(self.team2)
@@ -204,6 +208,18 @@ class Battle:
 
         print('Winner team is ' + self.winner)
         #time.sleep(1)
+
+    def get_atk_team_units_list(self):
+        if self.turn_team == 1:
+            return self.team1
+        else:
+            return self.team2
+
+    def get_def_team_units_list(self):
+        if self.get_defence_team_index() == 1:
+            return self.team1
+        else:
+            return self.team2
 
     def get_defence_team_index(self):
         if self.turn_team == 0:
@@ -266,7 +282,8 @@ class Battle:
         unit_to_reborn = bg_unit_factory.create_unit_by_id(unit_id)
         unit_to_reborn.hp = 1
         unit_to_reborn.reborn = False
-        self.summon_custom(999,999,'complete_unit_error', complete_unit=unit_to_reborn)
+        unit_to_reborn.name += '_reborned'
+        self.summon_custom(999, 999, 'complete_unit_error', team_index, index_in_team, complete_unit=unit_to_reborn)
 
     def DR_Harvest_golem(self, team_index, index:int):
         self.summon_custom(2, 1, 'harvest golem summon', team_index, index, fraction=3)
