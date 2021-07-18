@@ -174,3 +174,20 @@ def test_bronze_warden_reborn():
             only_draw = False
 
     assert  only_draw is True
+
+def test_2Junk_bots_with_reborn_team2_win():
+    only_team2_win = True
+
+    for fight in range(0, 10):
+        team1 = bg_unit_factory.create_custom_team([(5, 6)], 'M')
+        team2 = bg_unit_factory.create_custom_team([], 'u')
+        team2.append(bg_unit_factory.create_junkbot())
+        team2.append(bg_unit_factory.create_junkbot())
+        team2[0].reborn = True
+        team2[1].reborn = True
+        battle = Battle(team1, team2)
+        battle.StartBattle()
+        if battle.winner != 'Team2':
+            only_team2_win = False
+
+    assert only_team2_win is True
