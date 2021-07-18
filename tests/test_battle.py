@@ -191,3 +191,17 @@ def test_2Junk_bots_with_reborn_team2_win():
             only_team2_win = False
 
     assert only_team2_win is True
+
+def test_aoe_team2_win():
+    only_team2_win = True
+
+    for fight in range(0, 10):
+        team1 = bg_unit_factory.create_custom_team([(2, 2), (2, 2)], 'M')
+        team2 = bg_unit_factory.create_custom_team([(2, 3)], 'u')
+        team2[0].aoe = True
+        battle = Battle(team1, team2)
+        battle.StartBattle(first_turn_team=2)
+        if battle.winner != 'Team2':
+            only_team2_win = False
+
+    assert only_team2_win is True

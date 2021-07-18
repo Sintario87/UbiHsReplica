@@ -16,6 +16,7 @@ class Unit:
     taunt = False
     bubble = False
     reborn = False
+    aoe = False
 
     death_event = 0
     invoke_death_event = 0
@@ -43,8 +44,11 @@ class Unit:
         self.invoke_death_event = 0
         self.self_buff_event = sb_event
 
-    def MakeAttack(self, target_unit):
+    def MakeAttack(self, target_unit, aoe_units=[]):
         target_unit.TakeDamage(self.atk)
+        if len(aoe_units) > 0:
+            for enemy_unit in aoe_units:
+                enemy_unit.TakeDamage(self.atk)
         self.TakeDamage(target_unit.atk)
         return self.invoke_death_event
 

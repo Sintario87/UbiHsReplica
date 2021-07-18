@@ -162,7 +162,12 @@ class Battle:
             defence_unit = self.ChooseUnitToAttack(defence_team_index)
             attacker_unit = self.GetUnitFromTeamByIndex(self.turn_team, attacker_unit_index)
 
-            death_event = attacker_unit.MakeAttack(defence_unit)
+            if attacker_unit.aoe is False:
+                death_event = attacker_unit.MakeAttack(defence_unit)
+            else:
+                death_event = attacker_unit.MakeAttack(defence_unit, self.get_units_for_aoe_hit(self.get_def_team_units_list().index(defence_unit)))
+
+
             log_line = self.GetUnitFromTeamByIndex(self.turn_team, attacker_unit_index).GetName() + ' атаковал ' \
                        + defence_unit.GetName()
             if death_event > 0:
@@ -211,15 +216,15 @@ class Battle:
 
     def get_atk_team_units_list(self):
         if self.turn_team == 1:
-            return self.team1
-        else:
             return self.team2
+        else:
+            return self.team1
 
     def get_def_team_units_list(self):
         if self.get_defence_team_index() == 1:
-            return self.team1
-        else:
             return self.team2
+        else:
+            return self.team1
 
     def get_defence_team_index(self):
         if self.turn_team == 0:
@@ -240,6 +245,20 @@ class Battle:
             return True
         else:
             return False
+
+    def get_units_for_aoe_hit(self,central_of_aoe_unit_index):
+        total = []
+        team = self.get_atk_team_units_list()
+        right_unit_index = central_of_aoe_unit_index + 1
+        if right_unit_index < len(team):
+            right_unit = team[central_of_aoe_unit_index + 1]
+            total.append(right_unit)
+
+        left_unit_index = central_of_aoe_unit_index - 1
+        if left_unit_index >= 0:
+            left_unit = team[central_of_aoe_unit_index - 1]
+            total.append(left_unit)
+        return total
 
     def get_self_buff_units_from_team(self, team_index):
         units = self.GetTeamByIndex(team_index)
